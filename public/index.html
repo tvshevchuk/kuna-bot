@@ -3,12 +3,27 @@
     <head>
         <meta charset="utf-8">
         <title>KUNA bot</title>
+        <link rel='stylesheet' href='style.css' />
     </head>
     <body>
         <h1>Kuna bot</h1>
-        <h3>Latest market data:</h3>
-        <button id='latestMarketDataBtn'>Get latest data</button>
-        <h3>My info:</h3>
+        
+        <span>Username: </span>
+        <input type='text' id='loginInput' />
+        <span>Password: </span>
+        <input type='password' id='passwordInput' />
+        
+        <div class='container'>
+            <div class='general-info'>
+                <h3>Latest market data:</h3>
+                <button id='latestMarketDataBtn'>Get latest data</button>
+            </div>
+            <div class='my-info'>
+                <h3>My info:</h3>
+                <button id='myInfoBtn'>My info</button>
+            </div>
+        </div>
+
         <script src="app.js"></script>
     </body>
 </html>
