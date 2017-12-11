@@ -34,6 +34,13 @@ app.get('/myinfo', auth, (req, res, next) => {
     });   
 });
 
+app.get('/myhistory', auth, (req, res, next) => {
+    kunaAPI.myHistory((err, response, body) => {
+        if (err) throw err;
+        res.send(body);
+    });   
+});
+
 app.get('/', (req, res) => {
     res.render(__dirname + 'index.html');
 });
