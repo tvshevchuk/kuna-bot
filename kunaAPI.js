@@ -122,7 +122,7 @@ const myInfo = cb => {
     "trades_count": количество торгов по ордеру, для нового ордера — 0
 }
 */
-const postMyOrder = (cb, body) => {
+const postMyOrder = (body, cb) => {
     let tonce = Date.now();
     let signature = createSignature('POST', '/api/v2/orders', `access_key=${access_key}&tonce=${tonce}`);
     return jsonPostRequest(`https://kuna.io/api/v2/orders?access_key=${access_key}&tonce=${tonce}&signature=${signature}`, cb, body);
@@ -148,7 +148,7 @@ const postMyOrder = (cb, body) => {
     "trades_count": количество сделок по ордеру
 }
 */
-const deleteMyOrder = (cb, body) => {
+const deleteMyOrder = (body, cb) => {
     let tonce = Date.now();
     let signature = createSignature('POST', '/api/v2/order/delete', `access_key=${access_key}&tonce=${tonce}`);
     return jsonPostRequest(`https://kuna.io/api/v2/order/delete?access_key=${access_key}&tonce=${tonce}&signature=${signature}`, cb, body);
@@ -172,7 +172,7 @@ const deleteMyOrder = (cb, body) => {
 */
 const myOrders = cb => {
     let tonce = Date.now();
-    let signature = createSignature('GET', '/api/v2/orders', `{access_key}&market=btcuah&tonce=${tonce}`);
+    let signature = createSignature('GET', '/api/v2/orders', `access_key=${access_key}&market=btcuah&tonce=${tonce}`);
     return jsonRequest(`https://kuna.io/api/v2/orders?access_key=${access_key}&market=btcuah&tonce=${tonce}&signature=${signature}`, cb);
 }
 

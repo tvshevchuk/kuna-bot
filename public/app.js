@@ -1,6 +1,6 @@
 
 const GetFetch = url => {
-    let authHeader = 'Basic ' + btoa(`${loginInput.value}:${passwordInput.value}`);
+    const authHeader = 'Basic ' + btoa(`${loginInput.value}:${passwordInput.value}`);
     const headers = new Headers();
     headers.append('Authorization', authHeader);   
     
@@ -11,32 +11,53 @@ const GetFetch = url => {
     });
 };
 
+const PostFetch = (url, body) => {
+    const authHeader = 'Basic ' + btoa(`${loginInput.value}:${passwordInput.value}`);
+    const headers = new Headers();
+    headers.append('Authorization', authHeader);   
+    headers.append('Content-type', 'application/json');
+    
+    return fetch(url, { 
+        method: 'post', 
+        headers, 
+        body: JSON.stringify(body) })
+            .then(response => {
+                if (response.status < 400) {
+                    return response.json();
+                } else throw 'auth error';
+            });
+}
+
+const linkToPre = pre => {
+    return data => {
+        pre.innerHTML = JSON.stringify(data, undefined, 2);
+    }
+}
+
 latestMarketDataBtn.addEventListener('click', () => {
-    GetFetch('/api/btcuah').then(data => {
-        latestMarketDataPre.innerHTML = JSON.stringify(data, undefined, 2);
-    });
+    GetFetch('/api/btcuah').then(linkToPre(latestMarketDataPre));
 });
 
 orderBookBtn.addEventListener('click', () => {
-    GetFetch('/api/orderbook').then(data => {
-        orderBookPre.innerHTML = JSON.stringify(data, undefined, 2);
-    });
+    GetFetch('/api/orderbook').then(linkToPre(orderBookPre));
 });
 
 tradesBtn.addEventListener('click', () => {
-    GetFetch('/api/trades').then(data => {
-        tradesPre.innerHTML = JSON.stringify(data, undefined, 2);
-    });
+    GetFetch('/api/trades').then(linkToPre(tradesPre));
 });
 
 myInfoBtn.addEventListener('click', () => {
-    GetFetch('/api/myinfo').then(data => {
-        myInfoPre.innerHTML = JSON.stringify(data, undefined, 2);
-    });
+    GetFetch('/api/myinfo').then(linkToPre(myInfoPre));
+});
+
+deleteOrderBtn.addEventListener('click', () => {
+    PostFetch('/api/deleteorder', {id: deleteOrderInput.value}).then(linkToPre(deleteOrderPre));
+});
+
+myOrdersBtn.addEventListener('click', () => {
+    GetFetch('/api/myorders').then(linkToPre(myOrdersPre));
 });
 
 myHistoryBtn.addEventListener('click', () => {
-    GetFetch('/api/myhistory').then(data => {
-        myHistoryPre.innerHTML = JSON.stringify(data, undefined, 2);
-    });
+    GetFetch('/api/myhistory').then(linkToPre(myHistoryPre));
 });
