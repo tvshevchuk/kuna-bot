@@ -32,6 +32,11 @@ router.get('/myinfo', auth, (req, res, next) => {
     kunaAPI.myInfo(sendBodyAsResponse(res));   
 });
 
+router.post('/postorder', auth, (req, res, next) => {
+    let { body } = req;
+    kunaAPI.postMyOrder(body, sendBodyAsResponse(res));
+});
+
 router.post('/deleteorder', auth, (req, res, next) => {
     let { body } = req;
     kunaAPI.deleteMyOrder(body, sendBodyAsResponse(res));

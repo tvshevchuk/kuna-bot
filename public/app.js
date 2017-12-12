@@ -50,6 +50,24 @@ myInfoBtn.addEventListener('click', () => {
     GetFetch('/api/myinfo').then(linkToPre(myInfoPre));
 });
 
+buyOrderBtn.addEventListener('click', () => {
+    PostFetch('/api/postorder', {
+        side: 'buy',
+        volume: uahVolumeInput.value / btcPriceInput.value,
+        market: 'btcuah',
+        price: parseInt(btcPriceInput.value)
+    }).then(linkToPre(postOrderPre));
+});
+
+sellOrderBtn.addEventListener('click', () => {
+    PostFetch('/api/postorder', {
+        side: 'sell',
+        volume: uahVolumeInput.value / btcPriceInput.value,
+        market: 'btcuah',
+        price: parseInt(btcPriceInput.value)
+    }).then(linkToPre(postOrderPre));
+});
+
 deleteOrderBtn.addEventListener('click', () => {
     PostFetch('/api/deleteorder', {id: deleteOrderInput.value}).then(linkToPre(deleteOrderPre));
 });
