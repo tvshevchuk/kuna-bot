@@ -12,19 +12,31 @@ const GetFetch = url => {
 };
 
 latestMarketDataBtn.addEventListener('click', () => {
-    GetFetch('/btcuah').then(data => {
+    GetFetch('/api/btcuah').then(data => {
         latestMarketDataPre.innerHTML = JSON.stringify(data, undefined, 2);
     });
 });
 
+orderBookBtn.addEventListener('click', () => {
+    GetFetch('/api/orderbook').then(data => {
+        orderBookPre.innerHTML = JSON.stringify(data, undefined, 2);
+    });
+});
+
+tradesBtn.addEventListener('click', () => {
+    GetFetch('/api/trades').then(data => {
+        tradesPre.innerHTML = JSON.stringify(data, undefined, 2);
+    });
+});
+
 myInfoBtn.addEventListener('click', () => {
-    GetFetch('/myinfo').then(data => {
+    GetFetch('/api/myinfo').then(data => {
         myInfoPre.innerHTML = JSON.stringify(data, undefined, 2);
     });
 });
 
 myHistoryBtn.addEventListener('click', () => {
-    GetFetch('/myhistory').then(data => {
+    GetFetch('/api/myhistory').then(data => {
         myHistoryPre.innerHTML = JSON.stringify(data, undefined, 2);
     });
 });
