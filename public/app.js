@@ -79,3 +79,11 @@ myOrdersBtn.addEventListener('click', () => {
 myHistoryBtn.addEventListener('click', () => {
     GetFetch('/api/myhistory').then(linkToPre(myHistoryPre));
 });
+
+startBotBtn.addEventListener('click', () => {
+    GetFetch('/api/startbot').then(linkToPre(botStatusPre));
+});
+
+stopBotBtn.addEventListener('click', () => {
+    GetFetch('/api/stopbot').then(linkToPre(botStatusPre));
+});
