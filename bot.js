@@ -1,5 +1,7 @@
 const kunaAPI = require('./kunaAPI');
 
+const uahBudget = 10; 
+
 class Bot {
     constructor() {
         this.isRun = false;
@@ -8,12 +10,11 @@ class Bot {
     start () {
         if (this.isRun) return;
 
-        let i = 0;
         let self = this;
 
         this.isRun = true;
+
         this.timeoutId = setTimeout(function timeout() {
-            console.log(++i);
             self.timeoutId = setTimeout(timeout, 2000);
         }, 2000);
     }

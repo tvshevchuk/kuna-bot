@@ -7,22 +7,21 @@ const bot = require('./bot');
 const router = express.Router();
 
 const sendBodyAsResponse = (res) => {
-    return (err, response, body) => {
-        if (err) throw err;
-        res.send(body);
+    return result => {
+        res.send(result);
     };
 };
 
 router.get('/btcuah', (req, res) => {
-    kunaAPI.btcuah(sendBodyAsResponse(res));   
+    kunaAPI.btcuah().then(sendBodyAsResponse(res));   
 });
 
 router.get('/orderbook', (req, res) => {
-    kunaAPI.orderbook(sendBodyAsResponse(res));   
+    kunaAPI.orderbook().then(sendBodyAsResponse(res));   
 });
 
 router.get('/trades', (req, res) => {
-    kunaAPI.trades(sendBodyAsResponse(res));   
+    kunaAPI.trades().then(sendBodyAsResponse(res));   
 });
 
 const auth = basicAuth({
@@ -30,25 +29,25 @@ const auth = basicAuth({
 });
 
 router.get('/myinfo', auth, (req, res) => {
-    kunaAPI.myInfo(sendBodyAsResponse(res));   
+    kunaAPI.myInfo().then(sendBodyAsResponse(res));   
 });
 
 router.post('/postorder', auth, (req, res) => {
     let { body } = req;
-    kunaAPI.postMyOrder(body, sendBodyAsResponse(res));
+    kunaAPI.postMyOrder(body).then(sendBodyAsResponse(res));
 });
 
 router.post('/deleteorder', auth, (req, res) => {
     let { body } = req;
-    kunaAPI.deleteMyOrder(body, sendBodyAsResponse(res));
+    kunaAPI.deleteMyOrder(body).then(sendBodyAsResponse(res));
 });
 
 router.get('/myorders', auth, (req, res) => {
-    kunaAPI.myOrders(sendBodyAsResponse(res));   
+    kunaAPI.myOrders().then(sendBodyAsResponse(res));   
 });
 
 router.get('/myhistory', auth, (req, res) => {
-    kunaAPI.myHistory(sendBodyAsResponse(res));   
+    kunaAPI.myHistory().then(sendBodyAsResponse(res));   
 });
 
 router.get('/startbot', auth, (req, res) => {

@@ -1,11 +1,11 @@
-const request = require('request');
+const request = require('request-promise-native');
 const hmacSHA256 = require('crypto-js/hmac-sha256');
 const hex = require('crypto-js/enc-hex.js');
 
-const jsonRequest = (url, cb) => request({url, json: true}, cb);
-const jsonPostRequest = (url, cb, body) => request({method: 'POST', url, json: true, body}, cb);
+const jsonRequest = url => request({url, json: true});
+const jsonPostRequest = (url, body) => request({method: 'POST', url, json: true, body});
 
-const timestamp = cb => request('https://kuna.io/api/v2/timestamp', cb);
+const timestamp = () => request('https://kuna.io/api/v2/timestamp');
 
 /*
     {
@@ -21,7 +21,7 @@ const timestamp = cb => request('https://kuna.io/api/v2/timestamp', cb);
     }
 }
 */
-const btcuah = cb => jsonRequest('https://kuna.io/api/v2/tickers/btcuah', cb);
+const btcuah = () => jsonRequest('https://kuna.io/api/v2/tickers/btcuah');
 
 /*
     {
@@ -58,7 +58,7 @@ const btcuah = cb => jsonRequest('https://kuna.io/api/v2/tickers/btcuah', cb);
     }]
 }
 */
-const orderbook = cb => jsonRequest('https://kuna.io/api/v2/order_book?market=btcuah', cb);
+const orderbook = () => jsonRequest('https://kuna.io/api/v2/order_book?market=btcuah');
 
 /*
     [{
@@ -71,7 +71,7 @@ const orderbook = cb => jsonRequest('https://kuna.io/api/v2/order_book?market=bt
     "side": всегда null
 }]
 */
-const trades = cb => jsonRequest('https://kuna.io/api/v2/trades?market=btcuah', cb); 
+const trades = () => jsonRequest('https://kuna.io/api/v2/trades?market=btcuah'); 
 
 const access_key = 'Yzl4tdCgMWhqITEEXpRJBRR7bKxZsAhH6pSqEHKr';
 const private_key = 'KxqcnyGMF4hC8peLMUMP63XWyq5dx3Caqi09yuQw';  
@@ -93,10 +93,10 @@ const createSignature = (method, url, parameters) => {
     }]
 }
 */
-const myInfo = cb => {
+const myInfo = () => {
     let tonce = Date.now();
     let signature = createSignature('GET', '/api/v2/members/me', `access_key=${access_key}&tonce=${tonce}`);
-    return jsonRequest(`https://kuna.io/api/v2/members/me?access_key=${access_key}&tonce=${tonce}&signature=${signature}`, cb);
+    return jsonRequest(`https://kuna.io/api/v2/members/me?access_key=${access_key}&tonce=${tonce}&signature=${signature}`);
 }
 
 /*
@@ -122,10 +122,10 @@ const myInfo = cb => {
     "trades_count": количество торгов по ордеру, для нового ордера — 0
 }
 */
-const postMyOrder = (body, cb) => {
+const postMyOrder = (body) => {
     let tonce = Date.now();
     let signature = createSignature('POST', '/api/v2/orders', `access_key=${access_key}&tonce=${tonce}`);
-    return jsonPostRequest(`https://kuna.io/api/v2/orders?access_key=${access_key}&tonce=${tonce}&signature=${signature}`, cb, body);
+    return jsonPostRequest(`https://kuna.io/api/v2/orders?access_key=${access_key}&tonce=${tonce}&signature=${signature}`, body);
 }
 
 /*
@@ -148,10 +148,10 @@ const postMyOrder = (body, cb) => {
     "trades_count": количество сделок по ордеру
 }
 */
-const deleteMyOrder = (body, cb) => {
+const deleteMyOrder = (body) => {
     let tonce = Date.now();
     let signature = createSignature('POST', '/api/v2/order/delete', `access_key=${access_key}&tonce=${tonce}`);
-    return jsonPostRequest(`https://kuna.io/api/v2/order/delete?access_key=${access_key}&tonce=${tonce}&signature=${signature}`, cb, body);
+    return jsonPostRequest(`https://kuna.io/api/v2/order/delete?access_key=${access_key}&tonce=${tonce}&signature=${signature}`, body);
 }
 
 /*
@@ -170,10 +170,10 @@ const deleteMyOrder = (body, cb) => {
     "trades_count": количество сделок по ордеру
 }]
 */
-const myOrders = cb => {
+const myOrders = () => {
     let tonce = Date.now();
     let signature = createSignature('GET', '/api/v2/orders', `access_key=${access_key}&market=btcuah&tonce=${tonce}`);
-    return jsonRequest(`https://kuna.io/api/v2/orders?access_key=${access_key}&market=btcuah&tonce=${tonce}&signature=${signature}`, cb);
+    return jsonRequest(`https://kuna.io/api/v2/orders?access_key=${access_key}&market=btcuah&tonce=${tonce}&signature=${signature}`);
 }
 
 /*
@@ -187,10 +187,10 @@ const myOrders = cb => {
     "side": bid или ask
 }]
 */
-const myHistory = cb => {
+const myHistory = () => {
     let tonce = Date.now();
     let signature = createSignature('GET', '/api/v2/trades/my', `access_key=${access_key}&market=btcuah&tonce=${tonce}`);
-    return jsonRequest(`https://kuna.io/api/v2/trades/my?access_key=${access_key}&market=btcuah&tonce=${tonce}&signature=${signature}`, cb);
+    return jsonRequest(`https://kuna.io/api/v2/trades/my?access_key=${access_key}&market=btcuah&tonce=${tonce}&signature=${signature}`);
 }
 
 module.exports = {
