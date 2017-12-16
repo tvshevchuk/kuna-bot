@@ -1,6 +1,6 @@
 const kunaAPI = require('./kunaAPI');
 
-const uahBudget = 10; 
+const uahBudget = 50; 
 const delay = 5000;
 
 class Bot {
