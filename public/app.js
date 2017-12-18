@@ -81,7 +81,9 @@ myHistoryBtn.addEventListener('click', () => {
 });
 
 startBotBtn.addEventListener('click', () => {
-    GetFetch('/api/startbot').then(linkToPre(botStatusPre));
+    PostFetch('/api/startbot', {
+        uahBudget: uahBudgetInput.value
+    }).then(linkToPre(botStatusPre));
 });
 
 stopBotBtn.addEventListener('click', () => {

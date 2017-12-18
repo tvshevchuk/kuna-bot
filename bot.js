@@ -1,10 +1,10 @@
 const kunaAPI = require('./kunaAPI');
 
-const uahBudget = 50; 
 const delay = 5000;
 
 class Bot {
-    constructor() {
+    constructor(uahBudget) {
+        this.uahBudget = uahBudget;
         this.isRun = false;
     }
 
@@ -19,10 +19,12 @@ class Bot {
         kunaAPI.myHistory().then(myHistory => {
             return myHistory[0];
         }).then(myLastTrade => {
-            isSell = (myLastTrade.side === 'bid') && (parseFloat(myLastTrade.funds) > uahBudget - 1);
+
+            //TODO: sell btc if current btc budget is less then requested uah budget
+            isSell = (myLastTrade.side === 'bid') && (parseFloat(myLastTrade.funds) > this.uahBudget - 1);
             if (isSell) {
                 buyPrice = parseFloat(myLastTrade.price);
-                boughtenVolume = uahBudget / buyPrice;
+                boughtenVolume = this.uahBudget / buyPrice;
                 maxSellPrice = 0;
             }
 
@@ -33,6 +35,7 @@ class Bot {
                         let ask = parseFloat(orderBook.asks[0].price);
     
                         if (isSell) {
+                            //TODO: include tax for deal
                             if (bid > buyPrice) {
                                 if (bid >= maxSellPrice) {
                                     maxSellPrice = bid;
@@ -64,7 +67,7 @@ class Bot {
                                 resolve();
                             }
                         } else {
-                            boughtenVolume = uahBudget / ask;
+                            boughtenVolume = this.uahBudget / ask;
                             let options = {
                                 side: 'buy',
                                 volume: boughtenVolume,

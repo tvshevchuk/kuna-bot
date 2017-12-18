@@ -50,8 +50,8 @@ router.get('/myhistory', auth, (req, res) => {
     kunaAPI.myHistory().then(sendBodyAsResponse(res));   
 });
 
-router.get('/startbot', auth, (req, res) => {
-    bot.start();
+router.post('/startbot', auth, (req, res) => {
+    bot.start(body.uahBudget);
     res.status(200).send({status: 'Bot started'});
 });
 
