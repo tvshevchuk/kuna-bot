@@ -1,49 +1,50 @@
 const kunaAPI = require('./kunaAPI');
 
 const delay = 5000;
+const netCoeff = 0.9975;
+const market = 'btcuah';
 
 class Bot {
-    constructor(uahBudget) {
-        this.uahBudget = uahBudget;
+    constructor() {
+        this.uahBudget = 0;
         this.isRun = false;
     }
 
-    start () {
+    start (uahBudget) {
         if (this.isRun) return;
 
         let self = this;
-        let isSell, maxSellPrice, buyPrice, isPeak, boughtenVolume;
+        let isSell, maxSellPrice, soldFunds, boughtenVolume;
         
         this.isRun = true;
-
-        kunaAPI.myHistory().then(myHistory => {
+        this.uahBudget = uahBudget;
+        
+        kunaAPI.myHistory(market).then(myHistory => {
             return myHistory[0];
         }).then(myLastTrade => {
 
             //TODO: sell btc if current btc budget is less then requested uah budget
             isSell = (myLastTrade.side === 'bid') && (parseFloat(myLastTrade.funds) > this.uahBudget - 1);
             if (isSell) {
-                buyPrice = parseFloat(myLastTrade.price);
-                boughtenVolume = this.uahBudget / buyPrice;
+                soldFunds = parseFloat(myLastTrade.funds);
+                boughtenVolume = parseFloat(myLastTrade.volume);
                 maxSellPrice = 0;
             }
 
             let timeout = () => {
                 let promise = new Promise((resolve, reject) => {
-                    kunaAPI.orderbook().then(orderBook => {
+                    kunaAPI.orderbook(market).then(orderBook => {
                         let bid = parseFloat(orderBook.bids[0].price);
                         let ask = parseFloat(orderBook.asks[0].price);
     
                         if (isSell) {
-                            //TODO: include tax for deal
-                            if (bid > buyPrice) {
+                            if (bid * boughtenVolume * netCoeff > soldFunds) {
                                 if (bid >= maxSellPrice) {
                                     maxSellPrice = bid;
-                                    isPeak = true;
                                     console.log(`maxSellPrice: ${maxSellPrice}`);
                                     resolve();
                                 } else {
-                                    if (isPeak) {
+                                    if (maxSellPrice) {
                                         let options = {
                                             side: 'sell',
                                             volume: boughtenVolume,
@@ -55,7 +56,7 @@ class Bot {
                                             isSell = false;
                                             maxSellPrice = 0;
                                             resolve();
-                                        });
+                                        }).catch(error => reject(error));
                                     } else {
                                         console.log(`bid: ${bid}`);
                                         resolve();
@@ -63,10 +64,12 @@ class Bot {
                                 }
                             }
                             else {
+                                maxSellPrice = 0;
                                 console.log(`bid: ${bid}`);
                                 resolve();
                             }
                         } else {
+                            //TODO: include tax
                             boughtenVolume = this.uahBudget / ask;
                             let options = {
                                 side: 'buy',
@@ -74,21 +77,20 @@ class Bot {
                                 market: 'btcuah',
                                 price: ask
                             }
-                            console.log(options);
                             kunaAPI.postMyOrder(options).then(order => {
                                 console.log('Boughten order: ', order);
                                 isSell = true;
                                 maxSellPrice = 0;
                                 buyPrice = ask;
                                 resolve();
-                            });
+                            }).catch(error => reject(error));
                         }
                     });
                 });
                 
                 promise.then(() => {
                     this.timeoutId = setTimeout(timeout, delay);        
-                });
+                }).catch(error => console.log(error));
             };
 
             this.timeoutId = setTimeout(timeout, delay);

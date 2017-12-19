@@ -21,7 +21,7 @@ const timestamp = () => request('https://kuna.io/api/v2/timestamp');
     }
 }
 */
-const btcuah = () => jsonRequest('https://kuna.io/api/v2/tickers/btcuah');
+const tickers = (market) => jsonRequest(`https://kuna.io/api/v2/tickers/${market}`);
 
 /*
     {
@@ -58,7 +58,7 @@ const btcuah = () => jsonRequest('https://kuna.io/api/v2/tickers/btcuah');
     }]
 }
 */
-const orderbook = () => jsonRequest('https://kuna.io/api/v2/order_book?market=btcuah');
+const orderbook = (market) => jsonRequest(`https://kuna.io/api/v2/order_book?market=${market}`);
 
 /*
     [{
@@ -71,7 +71,7 @@ const orderbook = () => jsonRequest('https://kuna.io/api/v2/order_book?market=bt
     "side": всегда null
 }]
 */
-const trades = () => jsonRequest('https://kuna.io/api/v2/trades?market=btcuah'); 
+const trades = (market) => jsonRequest(`https://kuna.io/api/v2/trades?market=${market}`); 
 
 const access_key = 'Yzl4tdCgMWhqITEEXpRJBRR7bKxZsAhH6pSqEHKr';
 const private_key = 'KxqcnyGMF4hC8peLMUMP63XWyq5dx3Caqi09yuQw';  
@@ -170,10 +170,10 @@ const deleteMyOrder = (body) => {
     "trades_count": количество сделок по ордеру
 }]
 */
-const myOrders = () => {
+const myOrders = (market) => {
     let tonce = Date.now();
-    let signature = createSignature('GET', '/api/v2/orders', `access_key=${access_key}&market=btcuah&tonce=${tonce}`);
-    return jsonRequest(`https://kuna.io/api/v2/orders?access_key=${access_key}&market=btcuah&tonce=${tonce}&signature=${signature}`);
+    let signature = createSignature('GET', '/api/v2/orders', `access_key=${access_key}&market=${market}&tonce=${tonce}`);
+    return jsonRequest(`https://kuna.io/api/v2/orders?access_key=${access_key}&market=${market}&tonce=${tonce}&signature=${signature}`);
 }
 
 /*
@@ -187,15 +187,15 @@ const myOrders = () => {
     "side": bid или ask
 }]
 */
-const myHistory = () => {
+const myHistory = (market) => {
     let tonce = Date.now();
-    let signature = createSignature('GET', '/api/v2/trades/my', `access_key=${access_key}&market=btcuah&tonce=${tonce}`);
-    return jsonRequest(`https://kuna.io/api/v2/trades/my?access_key=${access_key}&market=btcuah&tonce=${tonce}&signature=${signature}`);
+    let signature = createSignature('GET', '/api/v2/trades/my', `access_key=${access_key}&market=${market}&tonce=${tonce}`);
+    return jsonRequest(`https://kuna.io/api/v2/trades/my?access_key=${access_key}&market=${market}&tonce=${tonce}&signature=${signature}`);
 }
 
 module.exports = {
     timestamp,
-    btcuah,
+    tickers,
     orderbook,
     trades,
     myInfo,

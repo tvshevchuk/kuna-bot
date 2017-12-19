@@ -12,16 +12,16 @@ const sendBodyAsResponse = (res) => {
     };
 };
 
-router.get('/btcuah', (req, res) => {
-    kunaAPI.btcuah().then(sendBodyAsResponse(res));   
+router.get('/tickers/:market', (req, res) => {
+    kunaAPI.tickers(req.params.market).then(sendBodyAsResponse(res));   
 });
 
-router.get('/orderbook', (req, res) => {
-    kunaAPI.orderbook().then(sendBodyAsResponse(res));   
+router.get('/orderbook/:market', (req, res) => {
+    kunaAPI.orderbook(req.params.market).then(sendBodyAsResponse(res));   
 });
 
-router.get('/trades', (req, res) => {
-    kunaAPI.trades().then(sendBodyAsResponse(res));   
+router.get('/trades/:market', (req, res) => {
+    kunaAPI.trades(req.params.market).then(sendBodyAsResponse(res));   
 });
 
 const auth = basicAuth({
@@ -42,15 +42,16 @@ router.post('/deleteorder', auth, (req, res) => {
     kunaAPI.deleteMyOrder(body).then(sendBodyAsResponse(res));
 });
 
-router.get('/myorders', auth, (req, res) => {
-    kunaAPI.myOrders().then(sendBodyAsResponse(res));   
+router.get('/myorders/:market', auth, (req, res) => {
+    kunaAPI.myOrders(req.params.market).then(sendBodyAsResponse(res));   
 });
 
-router.get('/myhistory', auth, (req, res) => {
-    kunaAPI.myHistory().then(sendBodyAsResponse(res));   
+router.get('/myhistory/:market', auth, (req, res) => {
+    kunaAPI.myHistory(req.params.market).then(sendBodyAsResponse(res));   
 });
 
 router.post('/startbot', auth, (req, res) => {
+    let { body } = req;
     bot.start(body.uahBudget);
     res.status(200).send({status: 'Bot started'});
 });

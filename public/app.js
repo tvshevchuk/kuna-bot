@@ -35,15 +35,15 @@ const linkToPre = pre => {
 }
 
 latestMarketDataBtn.addEventListener('click', () => {
-    GetFetch('/api/btcuah').then(linkToPre(latestMarketDataPre));
+    GetFetch(`/api/tickers/${marketSelect.value}`).then(linkToPre(latestMarketDataPre));
 });
 
 orderBookBtn.addEventListener('click', () => {
-    GetFetch('/api/orderbook').then(linkToPre(orderBookPre));
+    GetFetch(`/api/orderbook/${marketSelect.value}`).then(linkToPre(orderBookPre));
 });
 
 tradesBtn.addEventListener('click', () => {
-    GetFetch('/api/trades').then(linkToPre(tradesPre));
+    GetFetch(`/api/trades/${marketSelect.value}`).then(linkToPre(tradesPre));
 });
 
 myInfoBtn.addEventListener('click', () => {
@@ -54,7 +54,7 @@ buyOrderBtn.addEventListener('click', () => {
     PostFetch('/api/postorder', {
         side: 'buy',
         volume: uahVolumeInput.value / btcPriceInput.value,
-        market: 'btcuah',
+        market: marketSelect.value,
         price: parseInt(btcPriceInput.value)
     }).then(linkToPre(postOrderPre));
 });
@@ -63,7 +63,7 @@ sellOrderBtn.addEventListener('click', () => {
     PostFetch('/api/postorder', {
         side: 'sell',
         volume: uahVolumeInput.value / btcPriceInput.value,
-        market: 'btcuah',
+        market: marketSelect.value,
         price: parseInt(btcPriceInput.value)
     }).then(linkToPre(postOrderPre));
 });
@@ -73,11 +73,11 @@ deleteOrderBtn.addEventListener('click', () => {
 });
 
 myOrdersBtn.addEventListener('click', () => {
-    GetFetch('/api/myorders').then(linkToPre(myOrdersPre));
+    GetFetch(`/api/myorders/${marketSelect.value}`).then(linkToPre(myOrdersPre));
 });
 
 myHistoryBtn.addEventListener('click', () => {
-    GetFetch('/api/myhistory').then(linkToPre(myHistoryPre));
+    GetFetch(`/api/myhistory/${marketSelect.value}`).then(linkToPre(myHistoryPre));
 });
 
 startBotBtn.addEventListener('click', () => {
