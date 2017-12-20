@@ -87,12 +87,15 @@ class Bot {
                                 resolve();
                             }).catch(error => reject(error));
                         }
-                    });
+                    }).catch(error => reject(error));
                 });
                 
                 promise.then(() => {
                     this.timeoutId = setTimeout(timeout, delay);        
-                }).catch(error => console.log(error));
+                }).catch(error => {
+                    console.log(`ERROR: ${error}`);
+                    this.timeoutId = setTimeout(timeout, delay * 2);
+                });
             };
 
             this.timeoutId = setTimeout(timeout, delay);
