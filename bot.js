@@ -11,6 +11,7 @@ class Bot {
     }
 
     start (uahBudget) {
+        console.log(`${market} bot started`);
         if (this.isRun) return;
 
         let self = this;
@@ -81,7 +82,8 @@ class Bot {
                                 console.log('Boughten order: ', order);
                                 isSell = true;
                                 maxSellPrice = 0;
-                                buyPrice = ask;
+                                boughtenVolume = parseFloat(order.volume);
+                                soldFunds = parseFloat(order.volume) * parseFloat(order.price);
                                 resolve();
                             }).catch(error => reject(error));
                         }
@@ -98,6 +100,7 @@ class Bot {
     }
 
     stop () {
+        console.log(`${market} bot stoped`);
         this.isRun = false;
         clearTimeout(this.timeoutId);
     }
