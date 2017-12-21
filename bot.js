@@ -1,4 +1,5 @@
 const kunaAPI = require('./kunaAPI');
+const Order = require('./models/orderModel');
 
 const delay = 5000;
 const netCoeff = 0.9975;
@@ -20,15 +21,19 @@ class Bot {
         this.isRun = true;
         this.uahBudget = uahBudget;
         
-        kunaAPI.myHistory(market).then(myHistory => {
-            return myHistory[0];
+        Order.find({side: 'buy', method: 'first'}).sort({createdAt: -1}).exec((err, orders) => {
+            if (err) throw err;
+            return orders[0];
         }).then(myLastTrade => {
 
             //TODO: sell btc if current btc budget is less then requested uah budget
-            isSell = (myLastTrade.side === 'bid') && (parseFloat(myLastTrade.funds) > this.uahBudget - 1);
+            isSell = myLastTrade 
+                && (myLastTrade.side === 'buy') 
+                && (myLastTrade.price * myLastTrade.volume > this.uahBudget - 1);
+
             if (isSell) {
-                soldFunds = parseFloat(myLastTrade.funds);
-                boughtenVolume = parseFloat(myLastTrade.volume);
+                soldFunds = myLastTrade.funds;
+                boughtenVolume = myLastTrade.volume;
                 maxSellPrice = 0;
             }
 
@@ -56,6 +61,7 @@ class Bot {
                                             console.log('Sold order: ', order);
                                             isSell = false;
                                             maxSellPrice = 0;
+                                            //TODO: save order
                                             resolve();
                                         }).catch(error => reject(error));
                                     } else {
@@ -84,6 +90,7 @@ class Bot {
                                 maxSellPrice = 0;
                                 boughtenVolume = parseFloat(order.volume);
                                 soldFunds = parseFloat(order.volume) * parseFloat(order.price);
+                                //TODO: save order
                                 resolve();
                             }).catch(error => reject(error));
                         }
