@@ -80,12 +80,22 @@ myHistoryBtn.addEventListener('click', () => {
     GetFetch(`/api/myhistory/${marketSelect.value}`).then(linkToPre(myHistoryPre));
 });
 
-startBotBtn.addEventListener('click', () => {
-    PostFetch('/api/startbot', {
-        uahBudget: uahBudgetInput.value
-    }).then(linkToPre(botStatusPre));
+startBtcBotBtn.addEventListener('click', () => {
+    PostFetch('/api/startbot/btcuah', {
+        uahBudget: uahBudgetForBtcInput.value
+    }).then(linkToPre(btcBotStatusPre));
 });
 
-stopBotBtn.addEventListener('click', () => {
-    GetFetch('/api/stopbot').then(linkToPre(botStatusPre));
+stopBtcBotBtn.addEventListener('click', () => {
+    GetFetch('/api/stopbot/btcuah').then(linkToPre(btcBotStatusPre));
+});
+
+startEthBotBtn.addEventListener('click', () => {
+    PostFetch('/api/startbot/ethuah', {
+        uahBudget: uahBudgetForBtcInput.value
+    }).then(linkToPre(ethBotStatusPre));
+});
+
+stopEthBotBtn.addEventListener('click', () => {
+    GetFetch('/api/stopbot/ethuah').then(linkToPre(ethBotStatusPre));
 });

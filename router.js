@@ -50,14 +50,14 @@ router.get('/myhistory/:market', auth, (req, res) => {
     kunaAPI.myHistory(req.params.market).then(sendBodyAsResponse(res));   
 });
 
-router.post('/startbot', auth, (req, res) => {
+router.post('/startbot/:market', auth, (req, res) => {
     let { body } = req;
-    bot.start(body.uahBudget);
+    bot.startFirstMethod(req.params.market, body.uahBudget);
     res.status(200).send({status: 'Bot started'});
 });
 
-router.get('/stopbot', auth, (req, res) => {
-    bot.stop();
+router.get('/stopbot/:market', auth, (req, res) => {
+    bot.stopFirstMethod(req.params.market);
     res.status(200).send({status: 'Bot stoped'});
 });
 

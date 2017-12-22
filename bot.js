@@ -1,38 +1,48 @@
+import { setTimeout } from 'timers';
+import { timeout } from './C:/Users/Taras Shevchuk/AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/async';
+
 const kunaAPI = require('./kunaAPI');
 const Order = require('./models/orderModel');
 
 const delay = 5000;
 const netCoeff = 0.9975;
-const market = 'btcuah';
 
 class Bot {
     constructor() {
-        this.uahBudget = 0;
-        this.isRun = false;
+        this.uahBudget = {
+            btcuah: 0,
+            ethuah: 0
+        };
+        this.isRun = {
+            btcuah: false,
+            ethuah: false
+        };
+        this.timeoutId = {
+            btcuah: null,
+            ethuah: null
+        };
     }
 
-    start (uahBudget) {
+    startFirstMethod (market, uahBudget) {
         console.log(`${market} bot started`);
-        if (this.isRun) return;
+        if (this.isRun[market]) return;
 
         let self = this;
         let isSell, maxSellPrice, soldFunds, boughtenVolume;
         
-        this.isRun = true;
-        this.uahBudget = uahBudget;
+        this.isRun[market] = true;
+        this.uahBudget[market] = uahBudget;
         
-        Order.find({side: 'buy', method: 'first'}).sort({createdAt: -1}).exec((err, orders) => {
-            if (err) throw err;
-            return orders[0];
-        }).then(myLastTrade => {
+        Order.find({side: 'buy', method: 'first'}).sort({createdAt: -1}).then(orders => {
+            let myLastTrade = orders && orders[0];
 
             //TODO: sell btc if current btc budget is less then requested uah budget
             isSell = myLastTrade 
                 && (myLastTrade.side === 'buy') 
-                && (myLastTrade.price * myLastTrade.volume > this.uahBudget - 1);
+                && (myLastTrade.price * myLastTrade.volume > this.uahBudget[market] - 1);
 
             if (isSell) {
-                soldFunds = myLastTrade.funds;
+                soldFunds = myLastTrade.price * myLastTrade.volume;
                 boughtenVolume = myLastTrade.volume;
                 maxSellPrice = 0;
             }
@@ -47,7 +57,7 @@ class Bot {
                             if (bid * boughtenVolume * netCoeff > soldFunds) {
                                 if (bid >= maxSellPrice) {
                                     maxSellPrice = bid;
-                                    console.log(`maxSellPrice: ${maxSellPrice}`);
+                                    console.log(`${market} maxSellPrice: ${maxSellPrice}`);
                                     resolve();
                                 } else {
                                     if (maxSellPrice) {
@@ -68,19 +78,19 @@ class Bot {
                                             })
                                         }).catch(error => reject(error));
                                     } else {
-                                        console.log(`bid: ${bid}`);
+                                        console.log(`${market} bid: ${bid}`);
                                         resolve();
                                     }
                                 }
                             }
                             else {
                                 maxSellPrice = 0;
-                                console.log(`bid: ${bid}`);
+                                console.log(`${market} bid: ${bid}`);
                                 resolve();
                             }
                         } else {
                             //TODO: include tax
-                            boughtenVolume = this.uahBudget / ask;
+                            boughtenVolume = this.uahBudget[market] / ask;
                             let options = {
                                 side: 'buy',
                                 volume: boughtenVolume,
@@ -107,21 +117,33 @@ class Bot {
                 });
                 
                 promise.then(() => {
-                    this.timeoutId = setTimeout(timeout, delay);        
+                    this.timeoutId[market] = setTimeout(timeout, delay);        
                 }).catch(error => {
-                    console.log(`ERROR: ${error}`);
-                    this.timeoutId = setTimeout(timeout, delay * 2);
+                    this.timeoutId[market] = setTimeout(timeout, delay * 2);
                 });
             };
 
-            this.timeoutId = setTimeout(timeout, delay);
+            this.timeoutId[market] = setTimeout(timeout, delay);
         });
     }
 
-    stop () {
+    stopFirstMethod (market) {
         console.log(`${market} bot stoped`);
-        this.isRun = false;
-        clearTimeout(this.timeoutId);
+        this.isRun[market] = false;
+        clearTimeout(this.timeoutId[market]);
+    }
+
+    startSecondMethod (market, uahBudget) {
+        const timeout = () => {
+            this.timeoutId[market] = setTimeout(timeout, delay);
+        }
+        this.timeoutId[market] = setTimeout(timeout, delay);
+    }
+
+    stopSecondMethod (market) {
+        console.log(`${market} bot stoped`);
+        this.isRun[market] = false;
+        clearTimeout(this.timeoutId[market]);
     }
 }
 

@@ -2,8 +2,13 @@ const request = require('request-promise-native');
 const hmacSHA256 = require('crypto-js/hmac-sha256');
 const hex = require('crypto-js/enc-hex.js');
 
-const jsonRequest = url => request({url, json: true});
-const jsonPostRequest = (url, body) => request({method: 'POST', url, json: true, body});
+const handleErrorRequst = error => {
+    console.log(`ERROR: ${error}`);
+    return new Promise((resolve, reject) => reject(error));
+};
+
+const jsonRequest = url => request({url, json: true}).catch(handleErrorRequst);
+const jsonPostRequest = (url, body) => request({method: 'POST', url, json: true, body}).catch(handleErrorRequst);
 
 const timestamp = () => request('https://kuna.io/api/v2/timestamp');
 
