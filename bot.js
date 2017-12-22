@@ -61,8 +61,11 @@ class Bot {
                                             console.log('Sold order: ', order);
                                             isSell = false;
                                             maxSellPrice = 0;
-                                            //TODO: save order
-                                            resolve();
+
+                                            Order.find({method: 'first'}).sort({createdAt: -1}).limit(1).remove({}, (err) => {
+                                                if (err) reject(err);
+                                                resolve();
+                                            })
                                         }).catch(error => reject(error));
                                     } else {
                                         console.log(`bid: ${bid}`);
@@ -90,9 +93,15 @@ class Bot {
                                 maxSellPrice = 0;
                                 boughtenVolume = parseFloat(order.volume);
                                 soldFunds = parseFloat(order.volume) * parseFloat(order.price);
-                                //TODO: save order
-                                resolve();
-                            }).catch(error => reject(error));
+                                
+                                let newOrder = new Order(Object.assign(options, {
+                                    createdAt: new Date(),
+                                    method: 'first'
+                                }));
+                                return newOrder.save();
+                            })
+                            .then(() => resolve())
+                            .catch(error => reject(error));
                         }
                     }).catch(error => reject(error));
                 });

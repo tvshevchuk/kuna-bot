@@ -17,6 +17,10 @@ module.exports = mongoose.model('Order', {
         type: Date,
         required: true
     },
+    market: {
+        type: String,
+        required: true
+    },
     method: {
         type: String,
         required: true
