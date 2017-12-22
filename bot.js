@@ -1,6 +1,3 @@
-import { setTimeout } from 'timers';
-import { timeout } from './C:/Users/Taras Shevchuk/AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/async';
-
 const kunaAPI = require('./kunaAPI');
 const Order = require('./models/orderModel');
 
@@ -33,7 +30,7 @@ class Bot {
         this.isRun[market] = true;
         this.uahBudget[market] = uahBudget;
         
-        Order.find({side: 'buy', method: 'first'}).sort({createdAt: -1}).then(orders => {
+        Order.find({side: 'buy', method: 'first', market}).sort({createdAt: -1}).then(orders => {
             let myLastTrade = orders && orders[0];
 
             //TODO: sell btc if current btc budget is less then requested uah budget
@@ -64,7 +61,7 @@ class Bot {
                                         let options = {
                                             side: 'sell',
                                             volume: boughtenVolume,
-                                            market: 'btcuah',
+                                            market,
                                             price: bid
                                         }
                                         kunaAPI.postMyOrder(options).then(order => {
@@ -94,7 +91,7 @@ class Bot {
                             let options = {
                                 side: 'buy',
                                 volume: boughtenVolume,
-                                market: 'btcuah',
+                                market,
                                 price: ask
                             }
                             kunaAPI.postMyOrder(options).then(order => {
