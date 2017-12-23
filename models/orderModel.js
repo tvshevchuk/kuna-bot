@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = mongoose.model('Order', {
     side: {
-        type: String,
-        required: true
+        type: String
     },
     price: {
         type: Number,

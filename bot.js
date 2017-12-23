@@ -24,13 +24,12 @@ class Bot {
         console.log(`${market} bot started`);
         if (this.isRun[market]) return;
 
-        let self = this;
         let isSell, maxSellPrice, soldFunds, boughtenVolume;
         
         this.isRun[market] = true;
         this.uahBudget[market] = uahBudget;
         
-        Order.find({side: 'buy', method: 'first', market}).sort({createdAt: -1}).then(orders => {
+        Order.find({method: 'first', market}).sort({createdAt: -1}).then(orders => {
             let myLastTrade = orders && orders[0];
 
             //TODO: sell btc if current btc budget is less then requested uah budget
@@ -69,7 +68,7 @@ class Bot {
                                             isSell = false;
                                             maxSellPrice = 0;
 
-                                            Order.find({method: 'first'}).sort({createdAt: -1}).limit(1).remove({}, (err) => {
+                                            Order.find({method: 'first', market}).sort({createdAt: -1}).limit(1).remove({}, (err) => {
                                                 if (err) reject(err);
                                                 resolve();
                                             })
@@ -131,8 +130,70 @@ class Bot {
     }
 
     startSecondMethod (market, uahBudget) {
+        let askQueue = [], bidQueue = [];
+
         const timeout = () => {
-            this.timeoutId[market] = setTimeout(timeout, delay);
+            kunaAPI.orderbook(market).then(orderBook => {
+                let ask = orderBook.asks[0].price;
+                let bid = orderBook.bids[0].price;
+
+                let isAskMin = ask < Math.min(...askQueue);
+                let isBidMax = bid > Math.max(...bidQueue);
+
+                askQueue.push(ask);
+                bidQueue.push(bid);
+
+                if (askQueue.length > 60) {
+                    askQueue.shift();
+                    bidQueue.shift();
+
+                    let askPromise = new Promise((resolve, reject) => {
+                        if (isAskMin) {
+                            Order.find({method: 'second', market}).sort({createdAt: -1}).then(orders => {
+                                if (orders.length < 5 && Date.now() - orders[0].createdAt.getTime() > 5 * 60 * 1000) {
+                                    let options = {
+                                        side: 'buy',
+                                        volume: this.uahBudget[market] / ask,
+                                        market,
+                                        price: ask
+                                    };
+                                    kunaAPI.postMyOrder(options).then(order => {
+                                        console.log('Boughten order: ', order);
+                                        let newOrder = new Order(Object.assign(options, {
+                                            createdAt: new Date(),
+                                            method: 'second'
+                                        }));
+                                        return newOrder.save().then(() => resolve());
+                                    }).catch(() => reject());
+                                } else resolve();
+                            })
+                        } else resolve();
+                    });
+
+                    askPromise.then(() => {
+                        if (isBidMax) {
+                            return Order.find({method: 'second', market}).sort({price: -1}).then(orders => {
+                                if (bid > orders[0].price) {
+                                    let options = {
+                                        side: 'sell',
+                                        volume: orders[0].volume,
+                                        market,
+                                        price: bid
+                                    }
+                                    return kunaAPI.postMyOrder(options).then((order) => {
+                                        console.log('Sold order: ', order);
+                                        return Order.find({price: orders[0].price}).remove();
+                                    })
+                                }
+                            })
+                        } 
+                    }).then(() => {
+                        this.timeoutId[market] = setTimeout(timeout, delay);
+                    })
+                } else this.timeoutId[market] = setTimeout(timeout, delay);
+            }).catch(() => {
+                this.timeoutId[market] = setTimeout(timeout, delay * 2);
+            })
         }
         this.timeoutId[market] = setTimeout(timeout, delay);
     }
