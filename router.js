@@ -52,12 +52,12 @@ router.get('/myhistory/:market', auth, (req, res) => {
 
 router.post('/startbot/:market', auth, (req, res) => {
     let { body } = req;
-    bot.startFirstMethod(req.params.market, body.uahBudget);
+    bot.startSecondMethod(req.params.market, body.uahBudget);
     res.status(200).send({status: 'Bot started'});
 });
 
 router.get('/stopbot/:market', auth, (req, res) => {
-    bot.stopFirstMethod(req.params.market);
+    bot.stopSecondMethod(req.params.market);
     res.status(200).send({status: 'Bot stoped'});
 });
 
