@@ -2,6 +2,7 @@ const kunaAPI = require('./kunaAPI');
 const Order = require('./models/orderModel');
 
 const delay = 1000;
+const minutes = 20;
 const netCoeff = 0.9975;
 
 class Bot {
@@ -155,14 +156,14 @@ class Bot {
                 askQueue.push(ask);
                 bidQueue.push(bid);
 
-                if (askQueue.length > 30 * 60) {
+                if (askQueue.length > minutes * 60) {
                     askQueue.shift();
                     bidQueue.shift();
 
                     if (isAskMin) {
                         return Order.find({method: 'second', market}).sort({createdAt: -1})
                         .then(orders => {
-                            if (!orders.length || (orders.length < 5 && Date.now() - orders[0].createdAt.getTime() > 30 * 60 * 1000)) {
+                            if (!orders.length || (orders.length < 5 && Date.now() - orders[0].createdAt.getTime() > minutes * 60 * 1000)) {
                                 let options = {
                                     side: 'buy',
                                     volume: this.uahBudget[market] / ask,
@@ -184,7 +185,7 @@ class Bot {
                 }
             })
             .then(() => {
-                if (askQueue.length === 60 && isBidMax) {
+                if (askQueue.length === minutes * 60 && isBidMax) {
                     console.lob('here');
                     return Order.find({method: 'second', market}).sort({price: -1})
                     .then(orders => {
