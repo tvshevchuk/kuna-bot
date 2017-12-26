@@ -52,7 +52,7 @@ router.get('/myhistory/:market', auth, (req, res) => {
 
 router.post('/startbot/:market', auth, (req, res) => {
     let { body } = req;
-    bot.startSecondMethod(req.params.market, body.uahBudget);
+    bot.startSecondMethod(req.params.market, body.uahBudget, body.timeLimit);
     res.status(200).send({status: 'Bot started'});
 });
 

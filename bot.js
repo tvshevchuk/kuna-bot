@@ -3,7 +3,6 @@ const Order = require('./models/orderModel');
 const { fetchLastPriceFromOrderBook } = require('./kunaUtils');
 
 const delay = 2000;
-const minutes = 40;
 const netCoeff = 0.9975;
 
 class Bot {
@@ -22,7 +21,7 @@ class Bot {
         };
     }
 
-    startSecondMethod (market, uahBudget) {
+    startSecondMethod (market, uahBudget, timeLimit) {
         console.log(`${market} bot started`);
         if (this.isRun[market]) return;
 
@@ -48,14 +47,14 @@ class Bot {
                 askQueue.push(ask);
                 bidQueue.push(bid);
 
-                if (askQueue.length > minutes * Math.floor(60 * 1000 / delay)) {
+                if (askQueue.length > timeLimit * Math.floor(60 * 1000 / delay)) {
                     askQueue.shift();
                     bidQueue.shift();
 
                     if (isAskMin) {
                         return Order.find({method: 'second', market}).sort({createdAt: -1})
                         .then(orders => {
-                            if (!orders.length || (orders.length < 5 && Date.now() - orders[0].createdAt.getTime() > minutes * 60 * 1000)) {
+                            if (!orders.length || (orders.length < 5 && Date.now() - orders[0].createdAt.getTime() > timeLimit * 60 * 1000)) {
                                 let options = {
                                     side: 'buy',
                                     volume: this.uahBudget[market] / ask,
@@ -64,12 +63,19 @@ class Bot {
                                 };
                                 return kunaAPI.postMyOrder(options)
                                 .then(order => {
-                                    console.log('Boughten order: ', order);
-                                    let newOrder = new Order(Object.assign(options, {
-                                        createdAt: new Date(),
-                                        method: 'second'
-                                    }));
-                                    return newOrder.save();
+                                    return kunaAPI.myOrders(market).then(orders => {
+                                        return orders.length ? order : Object.assign(order, {isBoughten: true});
+                                    })
+                                })
+                                .then(order => {
+                                    if (order.isBoughten) {
+                                        console.log('Boughten order: ', order);
+                                        let newOrder = new Order(Object.assign(order, {
+                                            createdAt: new Date(),
+                                            method: 'second'
+                                        }));
+                                        return newOrder.save();
+                                    }
                                 });
                             }
                         })
@@ -77,7 +83,7 @@ class Bot {
                 }
             })
             .then(() => {
-                if (askQueue.length === minutes * Math.floor(60 * 1000 / delay) && isBidMax) {
+                if (askQueue.length === timeLimit * Math.floor(60 * 1000 / delay) && isBidMax) {
                     return Order.find({method: 'second', market}).sort({price: -1})
                     .then(orders => {
                         if (!!orders.length && bid > orders[0].price) {

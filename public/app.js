@@ -82,7 +82,8 @@ myHistoryBtn.addEventListener('click', () => {
 
 startBtcBotBtn.addEventListener('click', () => {
     PostFetch('/api/startbot/btcuah', {
-        uahBudget: uahBudgetForBtcInput.value
+        uahBudget: uahBudgetForBtcInput.value,
+        timeLimit: timeLimitForBtcInput.value
     }).then(linkToPre(btcBotStatusPre));
 });
 
@@ -92,7 +93,8 @@ stopBtcBotBtn.addEventListener('click', () => {
 
 startEthBotBtn.addEventListener('click', () => {
     PostFetch('/api/startbot/ethuah', {
-        uahBudget: uahBudgetForBtcInput.value
+        uahBudget: uahBudgetForEthInput.value,
+        timeLimit: timeLimitForEthInput.value
     }).then(linkToPre(ethBotStatusPre));
 });
 
