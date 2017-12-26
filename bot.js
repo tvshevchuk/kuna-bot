@@ -78,7 +78,6 @@ class Bot {
             })
             .then(() => {
                 if (askQueue.length === minutes * Math.floor(60 * 1000 / delay) && isBidMax) {
-                    console.lob('here');
                     return Order.find({method: 'second', market}).sort({price: -1})
                     .then(orders => {
                         if (!!orders.length && bid > orders[0].price) {
