@@ -75,7 +75,7 @@ class Bot {
                                             method: 'second'
                                         }));
                                         return newOrder.save();
-                                    }
+                                    } else return kunaAPI.deleteMyOrder({id: order.id});
                                 });
                             }
                         })
