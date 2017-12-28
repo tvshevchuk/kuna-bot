@@ -63,19 +63,13 @@ class Bot {
                                 };
                                 return kunaAPI.postMyOrder(options)
                                 .then(order => {
-                                    return kunaAPI.myOrders(market).then(orders => {
-                                        return orders.length ? order : Object.assign(order, {isBoughten: true});
-                                    })
-                                })
-                                .then(order => {
-                                    if (order.isBoughten) {
-                                        console.log('Boughten order: ', order);
-                                        let newOrder = new Order(Object.assign(order, {
-                                            createdAt: new Date(),
-                                            method: 'second'
-                                        }));
-                                        return newOrder.save();
-                                    } else return kunaAPI.deleteMyOrder({id: order.id});
+                                    console.log('Boughten order: ', order);
+                                     let newOrder = new Order(Object.assign(order, {
+                                        orderId: order.id,
+                                        createdAt: new Date(),
+                                        method: 'second'
+                                    }));
+                                    return newOrder.save();
                                 });
                             }
                         })

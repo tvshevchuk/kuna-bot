@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 module.exports = mongoose.model('Order', {
+    orderId: {
+        type: String,
+        required: true
+    },
     side: {
         type: String
     },
