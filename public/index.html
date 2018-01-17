@@ -3,82 +3,9 @@
     <head>
         <meta charset="utf-8">
         <title>KUNA bot</title>
-        <link rel='stylesheet' href='style.css' />
     </head>
     <body>
-        <h1>Kuna bot</h1>
-        
-        <span>Username: </span>
-        <input type='text' id='loginInput' />
-        <span>Password: </span>
-        <input type='password' id='passwordInput' />
-
-        <h3>Manage btc bot</h3>
-        <span>UAH budget: </span>
-        <input type='number' id='uahBudgetForBtcInput' /><br/>
-        <span>Time limit in minutes: </span>
-        <input type='number' id='timeLimitForBtcInput' /><br/>
-        <button id='startBtcBotBtn'>Start btc bot</button>
-        <button id='stopBtcBotBtn'>Stop btc bot</button>
-        <pre id='btcBotStatusPre'></pre>
-
-        <h3>Manage eth bot</h3>
-        <span>UAH budget: </span>
-        <input type='number' id='uahBudgetForEthInput' /><br/>
-        <span>Time limit in minutes: </span>
-        <input type='number' id='timeLimitForEthInput' /><br/>
-        <button id='startEthBotBtn'>Start eth bot</button>
-        <button id='stopEthBotBtn'>Stop eth bot</button>
-        <pre id='ethBotStatusPre'></pre>
-        
-        <h5>Check market</h5>
-        <select id='marketSelect'>
-            <option value='btcuah' selected>BTC to UAH</option>
-            <option value='ethuah'>ETH to UAH</option>
-        </select>
-        <div class='container'>
-            <div>
-                <h3>Latest market data:</h3>
-                <button id='latestMarketDataBtn'>Get latest data</button>
-                <pre id='latestMarketDataPre'></pre>
-                
-                <h3>Order book:</h3>
-                <button id='orderBookBtn'>Get order book</button>
-                <pre id='orderBookPre'></pre>
-                
-                <h3>Trades:</h3>
-                <button id='tradesBtn'>Get trades</button>
-                <pre id='tradesPre'></pre>
-            </div>
-            <div>
-                <h3>My info:</h3>
-                <button id='myInfoBtn'>My info</button>
-                <pre id='myInfoPre'></pre>
-
-                <h3>Post order:</h3>
-                <span>Uah volume</span>
-                <input type='number' id='uahVolumeInput'/><br/>
-                <span>Price for 1 btc</span>
-                <input type='number' id='btcPriceInput'/><br/>
-                <button id='buyOrderBtn'>Buy</button>
-                <button id='sellOrderBtn'>Sell</button>
-                <pre id='postOrderPre'></pre>
-                
-                <h3>Delete order:</h3>
-                <input type='text' id='deleteOrderInput'/><br/>
-                <button id='deleteOrderBtn'>Delete order</button>
-                <pre id='deleteOrderPre'></pre>
-                
-                <h3>My orders:</h3>
-                <button id='myOrdersBtn'>My orders</button>
-                <pre id='myOrdersPre'></pre>
-                
-                <h3>My history:</h3>
-                <button id='myHistoryBtn'>My history</button>
-                <pre id='myHistoryPre'></pre>
-            </div>
-        </div>
-
-        <script src="app.js"></script>
+        <div id='root'></div>
+        <script src="bundle.js"></script>
     </body>
 </html>
