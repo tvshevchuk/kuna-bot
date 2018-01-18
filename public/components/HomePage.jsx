@@ -1,6 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Tabs, Tab } from 'material-ui/Tabs';
 
 import { GetFetch, PostFetch } from '../fetchUtils.js';
+import BtcTab from './BtcTab.jsx';
 import Bot from './BotComponent.jsx';
 import Info from './InfoComponent.jsx';
 
@@ -25,6 +28,7 @@ class Home extends React.Component {
     }
 
     changeMarket(event) {
+        event.persist();
         this.setState(() => ({market: event.target.value}));
     }
 
@@ -55,23 +59,15 @@ class Home extends React.Component {
     }
 
     render() {
-        return (<div>
-            <h1>Kuna bot</h1>
-
-            <span>Username: </span>
-            <input type='text' id='loginInput' />
-            <span>Password: </span>
-            <input type='password' id='passwordInput' />
-
-            <Bot 
-                market={'btcuah'}
-            />
-
-            <Bot
-                market={'ethuah'}
-            />
-
-            <h5>Check market</h5>
+        return (<Tabs>
+                <Tab label='BTC'>
+                    <Bot market={'btcuah'}/>
+                </Tab>
+                <Tab label='ETH'>
+                    <Bot market={'ethuah'}/>
+                </Tab>
+                <Tab label='Other'>
+                <h5>Check market</h5>
             <select id='marketSelect' onChange={this.changeMarket}>
                 <option value='btcuah' defaultValue>BTC to UAH</option>
                 <option value='ethuah'>ETH to UAH</option>
@@ -134,8 +130,8 @@ class Home extends React.Component {
                     />
                 </div>
             </div>
-
-        </div>);
+                </Tab>
+            </Tabs>);
     }
 }
 
