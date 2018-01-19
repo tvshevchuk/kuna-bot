@@ -3,6 +3,8 @@ require('newrelic');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
+mongoose.Promise = global.Promise;
 
 const router = require('./router');
 
@@ -20,7 +22,6 @@ switch (env) {
         break;
 }
 
-mongoose.Promise = global.Promise;
 mongoose.connect(dbConnection, { useMongoClient: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -34,7 +35,7 @@ app.use(bodyParser.json());
 app.use('/api', router);
 
 app.get('*', (req, res) => {
-    res.send(__dirname + 'index.html');
+    res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
 app.listen(port, () => {
