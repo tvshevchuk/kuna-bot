@@ -27,7 +27,7 @@ class Bot {
                 this.bidQueue = status.bidStory;
             }
             
-            startSecondMethod(status.uahBudget, status.timeLimit);
+            this.startSecondMethod(status.uahBudget, status.timeLimit);
         });
     }
 
