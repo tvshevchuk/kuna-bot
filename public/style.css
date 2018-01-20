@@ -2,14 +2,6 @@ body {
     margin: 0;
 }
 
-.header {
-    justify-content: flex-start !important;
-}
-
-.header > div {
-    margin-left: 20px;
-}
-
 .container {
     display: flex;
     justify-content: flex-start;

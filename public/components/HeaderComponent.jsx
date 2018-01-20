@@ -1,31 +1,72 @@
 import React from 'react';
-import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import { NavLink } from 'react-router-dom';
+
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
+import AppBar from 'material-ui/AppBar';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+
+import Auth from './AuthComponent.jsx';
 
 class Header extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
-
+        
         this.state = {
-
+            isDrawerOpened: false,
+            isAuthDialogOpened: false
         }
+
+        this.openDrawer = this.openDrawer.bind(this);
+        this.closeDrawer = this.closeDrawer.bind(this);
+        this.openAuthDialog = this.openAuthDialog.bind(this);
+        this.closeAuthDialog = this.closeAuthDialog.bind(this);
+    }
+
+    openDrawer() {
+        this.setState(() => ({ isDrawerOpened: true }));
+    }
+
+    closeDrawer() {
+        this.setState(() => ({ isDrawerOpened: false }));
+    }
+
+    openAuthDialog() {
+        this.setState(() => ({ isAuthDialogOpened: true }));
+    }
+
+    closeAuthDialog() {
+        this.setState(() => ({ isAuthDialogOpened: false }));
     }
 
     render() {
         return (
-            <Toolbar className="header">
-                <ToolbarGroup firstChild={true}>
-                    <NavLink to="/">Kuna info</NavLink>
-                </ToolbarGroup>
-                <ToolbarGroup>
-                    <NavLink to="/btcuah">BTC bot</NavLink>
-                </ToolbarGroup>
-                <ToolbarGroup>
-                    <NavLink to="/ethuah">ETH bot</NavLink>
-                </ToolbarGroup>
-            </Toolbar>
+            <div>
+                <AppBar title="KUNA BOT" 
+                        onLeftIconButtonClick={this.openDrawer}
+                        iconElementRight={<FlatButton label="Login" onClick={this.openAuthDialog} />}
+                />
+                <Dialog open={this.state.isAuthDialogOpened}
+                        modal={false}
+                        onRequestClose={this.closeAuthDialog}>
+                    <Auth />
+                </Dialog>
+                <Drawer docked={false} 
+                        open={this.state.isDrawerOpened} 
+                        onRequestChange={(isDrawerOpened) => this.setState({isDrawerOpened})}>
+                    <MenuItem>
+                        <NavLink to="/" onClick={this.closeDrawer}>Kuna info</NavLink>
+                    </MenuItem>
+                    <MenuItem>
+                        <NavLink to="/btcuah" onClick={this.closeDrawer}>BTC bot</NavLink>
+                    </MenuItem>
+                    <MenuItem>
+                        <NavLink to="/ethuah" onClick={this.closeDrawer}>ETH bot</NavLink>
+                    </MenuItem>
+                </Drawer>
+            </div>
         );
     }
 }
