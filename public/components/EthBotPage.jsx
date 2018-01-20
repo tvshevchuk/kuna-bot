@@ -1,12 +1,10 @@
 import React from 'react';
+import Auth from './AuthComponent.jsx';
 import Bot from './BotComponent.jsx';
 
 const EthBotPage = () => (
     <div>
-        <span>Username: </span>
-        <input type='text' id='loginInput' />
-        <span>Password: </span>
-        <input type='password' id='passwordInput' />
+        <Auth />
         <Bot market={'ethuah'}/>
     </div>);
 

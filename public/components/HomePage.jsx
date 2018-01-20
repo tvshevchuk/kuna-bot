@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { GetFetch, PostFetch } from '../fetchUtils.js';
-import Bot from './BotComponent.jsx';
+import Auth from './AuthComponent.jsx';
 import Info from './InfoComponent.jsx';
 
 class Home extends React.Component {
@@ -59,6 +59,7 @@ class Home extends React.Component {
     render() {
         return (
             <div>
+                <Auth />
                 <h5>Check market</h5>
             <select id='marketSelect' onChange={this.changeMarket}>
                 <option value='btcuah' defaultValue>BTC to UAH</option>
