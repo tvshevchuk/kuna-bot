@@ -56,16 +56,16 @@ class Bot {
                     this.askQueue.push(ask);
                     this.bidQueue.push(bid);
 
-                    if (this.askQueue.length % 10 === 0) {
-                        Status.findOneAndUpdate({ market: this.market }, {
+                    if (i % 10 === 0) {
+                        return Status.findOneAndUpdate({ market: this.market }, {
                             $set: {
                                 askStory: this.askQueue,
                                 bidStory: this.bidQueue,
                                 updatedAt: new Date()
                             }
-                        }).then(() => {});
+                        });
                     }
-
+                }).then(() => {
                     if (this.askQueue.length > timeLimit * Math.floor(60 * 1000 / delay)) {
                         this.askQueue.shift();
                         this.bidQueue.shift();
