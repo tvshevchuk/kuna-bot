@@ -110,20 +110,29 @@ class Bot {
 
                     return isBidMax && Order.find({ method: 'second', market: this.market }).sort({ price: -1 })
                         .then(orders => {
-                            const soldOrder = orders.find(order => order.price < bid);
-                            if (!soldOrder) return;
+                            const orderForSell = orders.find(order => order.price < bid);
+                            if (!orderForSell) return;
 
                             let options = {
                                 side: 'sell',
-                                volume: soldOrder.volume,
+                                volume: orderForSell.volume,
                                 market: this.market,
                                 price: bid
                             };
+                            let soldOrder;
 
-                            return kunaAPI.postMyOrder(options).then((order) => {
-                                console.log('Sold order: ', order);
+                            return kunaAPI.postMyOrder(options)
+                            .then((order) => {
+                                soldOrder = order;
+                                return kunaAPI.myOrders(this.market);
+                            }).then(myOrders => {
+                                if (myOrders.length) {
+                                    return kunaAPI.deleteMyOrder({ id: myOrders[0].id });
+                                }
+                                
+                                console.log('Sold order: ', soldOrder);
                                 this.bidQueue = [];
-                                return Order.find({ price: soldOrder.price }).remove();
+                                return Order.find({ price: orderForSell.price }).remove();
                             })
 
                         })
