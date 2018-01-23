@@ -43,7 +43,12 @@ class Bot {
         const maxArrayLength = timeLimit * Math.floor(60 * 1000 / delay);
 
         const timeout = () => {
-            kunaAPI.orderbook(this.market)
+            kunaAPI.myOrders(this.market)
+                .then(myOrders => {
+                    if (myOrders && myOrders.length) {
+                        return kunaAPI.deleteMyOrder({ id: myOrders[0].id });
+                    }
+                }).then(() => kunaAPI.orderbook(this.market))         
                 .then(orderBook => {
                     bid = fetchLastPriceFromOrderBook(orderBook, 'bids');
                     ask = fetchLastPriceFromOrderBook(orderBook, 'asks');
