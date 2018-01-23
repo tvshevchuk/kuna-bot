@@ -122,14 +122,9 @@ class Bot {
                             let soldOrder;
 
                             return kunaAPI.postMyOrder(options)
-                            .then((order) => {
-                                soldOrder = order;
-                                return kunaAPI.myOrders(this.market);
-                            }).then(myOrders => {
-                                if (myOrders.length) {
-                                    return kunaAPI.deleteMyOrder({ id: myOrders[0].id });
-                                }
-                                
+                            .then(order => {
+                                if (!order) return;
+
                                 console.log('Sold order: ', soldOrder);
                                 this.bidQueue = [];
                                 return Order.find({ price: orderForSell.price }).remove();

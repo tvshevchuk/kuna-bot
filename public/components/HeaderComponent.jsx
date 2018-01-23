@@ -44,7 +44,7 @@ class Header extends React.Component {
     render() {
         return (
             <div>
-                <AppBar title="KUNA BOT" 
+                <AppBar title={<NavLink to='/'>TRADING BOT</NavLink>} 
                         onLeftIconButtonClick={this.openDrawer}
                         iconElementRight={<FlatButton label="Login" onClick={this.openAuthDialog} />}
                 />
@@ -57,13 +57,16 @@ class Header extends React.Component {
                         open={this.state.isDrawerOpened} 
                         onRequestChange={(isDrawerOpened) => this.setState({isDrawerOpened})}>
                     <MenuItem>
-                        <NavLink to="/" onClick={this.closeDrawer}>Kuna info</NavLink>
+                        <NavLink to="/kuna/api" onClick={this.closeDrawer}>Kuna info</NavLink>
                     </MenuItem>
                     <MenuItem>
-                        <NavLink to="/btcuah" onClick={this.closeDrawer}>BTC bot</NavLink>
+                        <NavLink to="/kuna/btcuahbot" onClick={this.closeDrawer}>BTC bot</NavLink>
                     </MenuItem>
                     <MenuItem>
-                        <NavLink to="/ethuah" onClick={this.closeDrawer}>ETH bot</NavLink>
+                        <NavLink to="/kuna/ethuahbot" onClick={this.closeDrawer}>ETH bot</NavLink>
+                    </MenuItem>
+                    <MenuItem>
+                        <NavLink to="/livecoin/api" onClick={this.closeDrawer}>Livecoin info</NavLink>
                     </MenuItem>
                 </Drawer>
             </div>
