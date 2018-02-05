@@ -29,7 +29,7 @@ class Bot extends React.Component {
     }
 
     startBot() {
-        PostFetch(`/api/startbot/${this.props.market}`, {
+        PostFetch(`/kuna/startbot/${this.props.market}`, {
             uahBudget: this.state.uahBudget,
             timeLimit: this.state.timeLimit
         }).then(data => {
@@ -38,7 +38,7 @@ class Bot extends React.Component {
     }
 
     stopBot() {
-        GetFetch(`/api/stopbot/${this.props.market}`).then(data => {
+        GetFetch(`/kuna/stopbot/${this.props.market}`).then(data => {
             this.setState(() => ({ botStatus: data.status }));
         });
     }

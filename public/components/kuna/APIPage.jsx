@@ -10,12 +10,6 @@ class Home extends React.Component {
         super();
         this.state = {
             market: 'btcuah',
-            latestMarketData: null,
-            orderBook: null,
-            trades: null,
-            myInfo: null,
-            myOrders: null,
-            myHistory: null,
             postOrder: null,
             deletedOrder: null
         }
@@ -47,14 +41,6 @@ class Home extends React.Component {
         });
     }
 
-    getInfo(url, property) {
-        GetFetch(url).then(data => {
-            this.setState(() => ({
-                [property]: JSON.stringify(data, undefined, 2)
-            }));
-        });
-    }
-
     render() {
         return (
             <div>
@@ -70,28 +56,24 @@ class Home extends React.Component {
                     <Info
                         titleName={'Latest market data'}
                         buttonName={'Get latest data'}
-                        onButtonClick={this.getInfo.bind(this, `/api/tickers/${this.state.market}`, 'latestMarketData')}
-                        viewData={this.state.latestMarketData}
+                        url={`/kuna/tickers/${this.state.market}`}
                     />
                     <Info 
                         titleName={'Order book'}
                         buttonName={'Get order book'}
-                        onButtonClick={this.getInfo.bind(this, `/api/orderbook/${this.state.market}`, 'orderBook')}
-                        viewData={this.state.orderBook}
+                        url={`/kuna/orderbook/${this.state.market}`}
                     />
                     <Info 
                         titleName={'Trades'}
                         buttonName={'Get trades'}
-                        onButtonClick={this.getInfo.bind(this, `/api/trades/${this.state.market}`, 'trades')}
-                        viewData={this.state.trades}
+                        url={`/kuna/trades/${this.state.market}`}
                     />
                 </div>
                 <div>
                     <Info 
                         titleName={'My info'}
                         buttonName={'My info'}
-                        onButtonClick={this.getInfo.bind(this, '/api/myinfo', 'myInfo')}
-                        viewData={this.state.myInfo}
+                        url={'/kuna/myinfo'}
                     />
 
                     <h3>Post order:</h3>
@@ -111,14 +93,12 @@ class Home extends React.Component {
                     <Info 
                         titleName={'My orders'}
                         buttonName={'My orders'}
-                        onButtonClick={this.getInfo.bind(this, `/api/myorders/${this.state.market}`, 'myOrders')}
-                        viewData={this.state.myOrders}
+                        url={`/kuna/myorders/${this.state.market}`}
                     />
                     <Info 
                         titleName={'My history'}
                         buttonName={'My history'}
-                        onButtonClick={this.getInfo.bind(this, `/api/myhistory/${this.state.market}`, 'myHistory')}
-                        viewData={this.state.myHistory}
+                        url={`/kuna/myhistory/${this.state.market}`}
                     />
                 </div>
             </div>

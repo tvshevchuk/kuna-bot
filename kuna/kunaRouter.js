@@ -2,8 +2,8 @@ const express = require('express');
 const basicAuth = require('express-basic-auth');
 
 const kunaAPI = require('./kunaAPI');
-const Status = require('./models/statusModel');
-const { getBotByMarket } = require('./utils/botUtils');
+const kunaBotFactory = require('./kunaBotFactory');
+const Status = require('../models/statusModel');
 
 const router = express.Router();
 
@@ -87,7 +87,7 @@ router.post('/startbot/:market', auth, (req, res) => {
 });
 
 router.get('/stopbot/:market', auth, (req, res) => {
-    let bot = getBotByMarket(req.params.market);
+    let bot = kunaBotFactory.getBotByMarket(req.params.market);
     
     Status.findOneAndUpdate( {market: req.params.market }, { $set: {isRun: false } })
     .then(() => {

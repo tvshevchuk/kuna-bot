@@ -1,7 +1,7 @@
 const kunaAPI = require('./kunaAPI');
-const Order = require('./models/orderModel');
-const Status = require('./models/statusModel');
-const { fetchLastPriceFromOrderBook } = require('./utils/kunaUtils');
+const Order = require('../models/orderModel');
+const Status = require('../models/statusModel');
+const { fetchLastPriceFromOrderBook } = require('./kunaUtils');
 
 const delay = 2000;
 const netCoeff = 0.9975;
@@ -154,10 +154,5 @@ class Bot {
     }
 }
 
-const btcuahBot = new Bot('btcuah');
-const ethuahBot = new Bot('ethuah');
+module.exports = Bot;
 
-module.exports = {
-    btcuahBot,
-    ethuahBot
-};

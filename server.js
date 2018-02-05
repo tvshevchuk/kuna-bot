@@ -6,7 +6,9 @@ const mongoose = require('mongoose');
 const path = require('path');
 mongoose.Promise = global.Promise;
 
-const router = require('./router');
+const livecoinRouter = require('./livecoin/livecoinRouter');
+const kunaBotFactory = require('./kuna/kunaBotFactory');
+const kunaRouter = require('./kuna/kunaRouter');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -29,10 +31,13 @@ db.once('open', () => {
   console.log('Successful connection to db.');
 });
 
+kunaBotFactory.initAllKunaBots();
+
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use('/api', router);
+app.use('/livecoin', livecoinRouter); 
+app.use('/kuna', kunaRouter);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
