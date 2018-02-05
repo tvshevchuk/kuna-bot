@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { GetFetch, PostFetch } from '../../fetchUtils.js';
-import Auth from '../AuthComponent.jsx';
 import Info from '../InfoComponent.jsx';
 
 class Home extends React.Component {
@@ -20,7 +19,7 @@ class Home extends React.Component {
 
     changeMarket(event) {
         event.persist();
-        this.setState(() => ({market: event.target.value}));
+        this.setState(() => ({ market: event.target.value }));
     }
 
     postOrder(side) {
@@ -30,27 +29,25 @@ class Home extends React.Component {
             market: this.state.market,
             price: parseInt(btcPriceInput.value)
         }).then(data => {
-            this.setState(() => ({postOrder: data}));
+            this.setState(() => ({ postOrder: data }));
         });
     }
 
     deleteOrder() {
         PostFetch('/api/deleteorder', { id: deleteOrderInput.value })
-        .then(data => {
-            this.setState(() => ({deletedOrder: data}))
-        });
+            .then(data => {
+                this.setState(() => ({ deletedOrder: data }))
+            });
     }
 
     render() {
-        return (
-            <div>
-                <Auth />
-                <h5>Check market</h5>
+        return (<div>
+            <h5>Check market</h5>
             <select id='marketSelect' onChange={this.changeMarket}>
                 <option value='btcuah' defaultValue>BTC to UAH</option>
                 <option value='ethuah'>ETH to UAH</option>
             </select>
-            
+
             <div className='container'>
                 <div>
                     <Info
@@ -58,19 +55,19 @@ class Home extends React.Component {
                         buttonName={'Get latest data'}
                         url={`/kuna/tickers/${this.state.market}`}
                     />
-                    <Info 
+                    <Info
                         titleName={'Order book'}
                         buttonName={'Get order book'}
                         url={`/kuna/orderbook/${this.state.market}`}
                     />
-                    <Info 
+                    <Info
                         titleName={'Trades'}
                         buttonName={'Get trades'}
                         url={`/kuna/trades/${this.state.market}`}
                     />
                 </div>
                 <div>
-                    <Info 
+                    <Info
                         titleName={'My info'}
                         buttonName={'My info'}
                         url={'/kuna/myinfo'}
@@ -90,19 +87,19 @@ class Home extends React.Component {
                     <button onClick={this.deleteOrder}>Delete order</button>
                     <pre>{this.state.deletedOrder}</pre>
 
-                    <Info 
+                    <Info
                         titleName={'My orders'}
                         buttonName={'My orders'}
                         url={`/kuna/myorders/${this.state.market}`}
                     />
-                    <Info 
+                    <Info
                         titleName={'My history'}
                         buttonName={'My history'}
                         url={`/kuna/myhistory/${this.state.market}`}
                     />
                 </div>
             </div>
-            </div>);
+        </div>);
     }
 }
 

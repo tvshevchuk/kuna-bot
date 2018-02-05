@@ -13,7 +13,7 @@ const GetFetch = (url, params) => {
 
 const PostFetch = (url, body) => {
     const headers = new Headers();
-    addAuthorizationHeader(header);
+    addAuthorizationHeader(headers);
     headers.append('Content-type', 'application/json');
     
     return fetch(url, { 

@@ -1,6 +1,6 @@
 const path = require('path');
 
-const publicPath = path.resolve(__dirname, 'public');
+const publicPath = path.join(__dirname, 'public');
 
 module.exports = {
     entry: path.join(__dirname, 'public/app.jsx'),
@@ -21,5 +21,9 @@ module.exports = {
                 use: ['style-loader', 'css-loader', 'sass-loader']
             }
         ]
+    },
+    devtool: 'cheap-module-eval-source-map',
+    devServer: {
+        contentBase: publicPath
     }
 }
